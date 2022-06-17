@@ -2,26 +2,28 @@
 
 require_once("init.php");
 
-$conn = mysqli_connect(BD_SERVIDOR, BD_USUARIO, BD_SENHA, BD_BANCO, BD_PORTA);
-
-if (!$conn) {
-    die("A conexão falhou: " . mysqli_connect_error());
-}
-
-class Banco {
-    protected $mysqli;
+    class Banco
+    {
+        protected $mysqli;
     
-    public function __construct() {
-
-        echo "Conexão efetuada com sucesso";
+    public function __construct()
+    {
+        echo "Conexão efetuada com sucesso.";
         $this->conexao();
-
     }
-    # Métodos criados para iniciar a conexão com o banco de dados
-    private function conexao() {
-        $this->mysqli = new mysqli_connect(BD_SERVIDOR, BD_USUARIO, BD_SENHA, BD_BANCO);
-       
+    private function conexao()
+    {
+        $this->mysqli = new mysqli(BD_SERVIDOR, BD_USUARIO, BD_SENHA, BD_BANCO);
     }
-        
     
+    public function setLivro ($nome,$autor,$quantidade,$preco,$data)
+    { 
+        $stmt = $this->mysqli->prepare("INSERT INTO livros ('Nome','Autor','Quantidade','Preco','Data') VALUES(?,?,?,?,?)");
+        $stmt->bind_param("sssss",$nome,$autor,$quantidade,$preco,$data);
+        if ($stmt->execute() == TRUE) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
